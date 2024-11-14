@@ -32,8 +32,9 @@ jobs:
       - name: Despliegue en Lightsail
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@3.82.92.76 << 'EOF'
+          cd ..
+          cd ..
           cd /var/www/html
-          
           # Clonar o actualizar el repositorio
           if [ -d ".git" ]; then
               sudo git pull origin main
