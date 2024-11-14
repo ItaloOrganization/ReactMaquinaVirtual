@@ -18,9 +18,9 @@ jobs:
 
       - name: Configurar y desplegar en AWS Lightsail
         env:
-          HOST: ubuntu@34.238.80.206 # Reemplaza con la dirección IP de tu instancia de Lightsail
+          HOST: ubuntu@34.238.80.206 # Reemplaza con la IP de tu Lightsail
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@34.238.80.206 << 'EOF'
+          ssh -o StrictHostKeyChecking=no $HOST << 'EOF'
           
           # Actualizar el sistema e instalar Git
           sudo apt update && sudo apt upgrade -y
@@ -30,15 +30,16 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
           sudo apt install -y nodejs
 
-          # Crear el directorio del proyecto en caso de que no exista
+          # Crear y establecer permisos en el directorio del proyecto
           sudo mkdir -p /var/www/react-app
+          sudo chown -R $USER:$USER /var/www/react-app
           cd /var/www/react-app
 
-          # Configurar el repositorio Git
+          # Clonar el repositorio o hacer pull si ya existe
           if [ -d ".git" ]; then
               git pull origin main
           else
-              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git 
+              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git .
           fi
 
           # Instalar dependencias y construir la aplicación
@@ -46,10 +47,10 @@ jobs:
               npm install
               npm run build
               
-              # Instalar serve globalmente para servir el proyecto
+              # Instalar 'serve' globalmente para servir el proyecto
               sudo npm install -g serve
 
-              # Configurar serve como un servicio para ejecutarse en el puerto 80
+              # Servir la aplicación construida en el puerto 80
               sudo npx serve -s build -l 80 &
           else
               echo "El archivo package.json no se encontró en el repositorio."
