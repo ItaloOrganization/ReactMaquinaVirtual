@@ -21,7 +21,7 @@ jobs:
       - name: Instalar Node.js y npm en Lightsail
         run: |
           sudo rm -rf /var/www/html/*
-          ssh -o StrictHostKeyChecking=no ubuntu@44.202.151.40 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@44.201.198.11 << 'EOF'
           # Instalar Node.js y npm si no están instalados
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
           sudo apt install -y nodejs
@@ -31,7 +31,7 @@ jobs:
 
       - name: Despliegue en Lightsail
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@44.202.151.40 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@44.201.198.11 << 'EOF'
           cd ..
           cd ..
           cd /var/www/html
