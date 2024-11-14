@@ -20,7 +20,7 @@ jobs:
         env:
           HOST: ubuntu@34.238.80.206 # Reemplaza con la dirección IP de tu instancia de Lightsail
         run: |
-          ssh -o StrictHostKeyChecking=no $HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@34.238.80.206 << 'EOF'
           
           # Actualizar el sistema e instalar Git
           sudo apt update && sudo apt upgrade -y
