@@ -38,7 +38,7 @@ jobs:
           if [ -d ".git" ]; then
               git pull origin main
           else
-              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git .
+              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git 
           fi
 
           # Instalar dependencias y construir la aplicación
