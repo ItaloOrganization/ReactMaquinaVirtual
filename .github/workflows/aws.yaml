@@ -1,4 +1,4 @@
-name: Deploy en AWS Lightsail
+name: Deploy React App en AWS Lightsail
 
 on:
   push:
@@ -11,50 +11,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configurar conexión SSH
+      - name: Conexion SSH
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Configurar y desplegar en AWS Lightsail
-        env:
-          HOST: ubuntu@34.238.80.206 # Reemplaza con la IP de tu Lightsail
+      - name: Despliegue en Lightsail
         run: |
           ssh -o StrictHostKeyChecking=no ubuntu@34.238.80.206 << 'EOF'
+          cd /var/www/html
           
-          # Actualizar el sistema e instalar Git
-          sudo apt update && sudo apt upgrade -y
-          sudo apt install -y git
-
-          # Instalar Node.js y npm
-          curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-          sudo apt install -y nodejs
-
-          # Crear y establecer permisos en el directorio del proyecto
-          sudo mkdir -p /var/www/react-app
-          sudo chown -R $USER:$USER /var/www/react-app
-          cd /var/www/react-app
-
-          # Clonar el repositorio o hacer pull si ya existe
+          # Clonar o actualizar el repositorio
           if [ -d ".git" ]; then
               git pull origin main
           else
-              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git .
+              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git
           fi
-
+          
           # Instalar dependencias y construir la aplicación
-          if [ -f "package.json" ]; then
-              npm install
-              npm run build
-              
-              # Instalar 'serve' globalmente para servir el proyecto
-              sudo npm install -g serve
-
-              # Servir la aplicación construida en el puerto 80
-              sudo npx serve -s build -l 80 &
-          else
-              echo "El archivo package.json no se encontró en el repositorio."
-              exit 1
-          fi
-
+          npm install
+          npm run build
+          
+          # Mover los archivos de construcción a la carpeta raíz del servidor
+          cp -r build/* /var/www/html
           EOF
