@@ -20,7 +20,8 @@ jobs:
 
       - name: Instalar Node.js y npm en Lightsail
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@34.238.80.206 << 'EOF'
+          sudo rm -rf /var/www/html/*
+          ssh -o StrictHostKeyChecking=no ubuntu@44.208.162.220 << 'EOF'
           # Instalar Node.js y npm si no están instalados
           curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
           sudo apt install -y nodejs
@@ -28,14 +29,14 @@ jobs:
 
       - name: Despliegue en Lightsail
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@34.238.80.206 << 'EOF'
+          ssh -o StrictHostKeyChecking=no ubuntu@44.208.162.220 << 'EOF'
           cd /var/www/html
           
           # Clonar o actualizar el repositorio
           if [ -d ".git" ]; then
-              git pull origin main
+              sudo git pull origin main
           else
-              git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git
+              sudo git clone https://github.com/ItaloOrganization/ReactMaquinaVirtual.git
           fi
           
           # Instalar dependencias y construir la aplicación
@@ -50,10 +51,10 @@ jobs:
           echo "/swapfile swap swap defaults 0 0" | sudo tee -a /etc/fstab
 
 
-          npm run build
+          sudo npm run build
           
 
 
           # Mover los archivos de construcción a la carpeta raíz del servidor
-          cp -r build/* /var/www/html
+          sudo cp -r build/* /var/www/html
           EOF
